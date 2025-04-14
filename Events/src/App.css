@@ -1,0 +1,91 @@
+/*Header*/
+
+#Header {
+  display: flex;
+  justify-content: center;
+}
+
+#Title {
+  color: black;
+}
+
+/*Events*/
+#EventList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+  grid-template-rows: auto;
+  flex-wrap: wrap;
+}
+
+.EventCard {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  gap: 0px;
+  background-color: #cccccc;
+  border: solid 2px black;
+  border-radius: 8px;
+  height: 400px;
+  aspect-ratio: 1/1;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "name name"
+    "startdate enddate"
+    "location location"
+    "desc desc";
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.EventCard:hover {
+  opacity: 75%;
+}
+
+li {
+  list-style-type: none;
+}
+
+#EventName {
+  grid-area: name;
+  margin: 5px;
+  padding: 0px;
+  font-size: 1em;
+  align-self: center;
+  justify-self: center;
+}
+
+#Location {
+  grid-area: location;
+  margin: 0px;
+  padding: 5px;
+  align-self: center;
+  justify-self: left;
+}
+#StartDate {
+  grid-area: startdate;
+  margin: 0px;
+  padding: 5px;
+  align-self: center;
+  justify-self: center;
+}
+#EndDate {
+  grid-area: enddate;
+  margin: 0px;
+  padding: 5px;
+  align-self: center;
+  justify-self: center;
+}
+
+#Description {
+  order: 4;
+  grid-area: desc;
+  margin: 0px;
+  padding: 5px;
+  word-wrap: break-word;
+  height: 50px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+/* Sign in */
