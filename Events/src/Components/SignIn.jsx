@@ -8,15 +8,20 @@ const Signin = ({ setProfile }) => {
   const { loggedInUser, setLoggedInUser } = useContext(LoggedInUserContext);
 
   const signinHandler = () => {
-    signIn(username, password).then((response) => {
-      console.log(response.headers.staff_id);
-      setLoggedInUser(response.headers.staff_id);
-      sessionStorage.setItem("staff_id", response.headers.staff_id);
-    });
+    signIn(username, password)
+      .then((response) => {
+        console.log(response.headers.staff_id);
+        setLoggedInUser(response.headers.staff_id);
+        sessionStorage.setItem("staff_id", response.headers.staff_id);
+      })
+      .then(() => {
+        setUsername("");
+        setPassword("");
+      });
   };
   const signoutHandler = () => {
     setLoggedInUser(null);
-    sessionStorage.setItem("staff_id", null);
+    sessionStorage.clear();
   };
 
   const usernameHandler = (e) => {

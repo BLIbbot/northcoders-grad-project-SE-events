@@ -10,6 +10,27 @@
 }
 
 /*Events*/
+#EventInput {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  gap: 0px;
+  background-color: #cccccc;
+  border: solid 2px black;
+  border-radius: 8px;
+  height: 400px;
+  aspect-ratio: 1/1;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "name"
+    "startdate"
+    "enddate"
+    "location"
+    "desc";
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
 #EventList {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -34,12 +55,10 @@
     "name name"
     "startdate enddate"
     "location location"
-    "desc desc";
+    "desc desc"
+    "edit delete"
+    "Ndelete Ydelete";
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-}
-
-.EventCard:hover {
-  opacity: 75%;
 }
 
 li {
@@ -88,4 +107,43 @@ li {
   overflow-x: hidden;
 }
 
+#CenterEventButton {
+  display: flex;
+  justify-content: center;
+}
+
+#DeleteButton {
+  grid-area: delete;
+}
+
+#YDel {
+  grid-area: Ndelete;
+}
+#NDel {
+  grid-area: Ydelete;
+}
+
+#EditButton {
+  grid-area: edit;
+}
+
+#AddEventButton {
+  align-self: center;
+}
+
+.Button {
+  margin: 5px;
+  padding: 0px;
+}
+.Button :hover {
+  background-color: darkslateblue;
+}
+
 /* Sign in */
+
+/* Error Handling */
+#ErrorMsg {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+}
