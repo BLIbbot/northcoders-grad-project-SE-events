@@ -57,7 +57,8 @@
     "location location"
     "desc desc"
     "edit delete"
-    "Ndelete Ydelete";
+    "Ndelete Ydelete"
+    "cbutton cbutton";
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
@@ -137,6 +138,60 @@ li {
 }
 .Button :hover {
   background-color: darkslateblue;
+}
+
+/* google calendar */
+
+.CalendarButtonWrapper {
+  grid-area: cbutton;
+  align-self: center;
+  justify-self: center;
+}
+
+.GoogleCalendarButton {
+  background-color: #4285f4;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  margin-top: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.GoogleCalendarButton:hover {
+  background-color: #357ae8;
+}
+
+.CalendarIcon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Toast */
+.CalendarToast {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.Spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid #ffffff;
+  border-top: 3px solid #357ae8;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Sign in */

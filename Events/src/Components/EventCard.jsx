@@ -4,6 +4,7 @@ import { EditingContext } from "../Contexts/EditingHandler";
 import { useContext, useState, useEffect } from "react";
 import { deleteEvent } from "../api";
 import { updateEvent } from "../api";
+import GoogleCalendarButton from "./GoogleCalanderButton";
 
 const EventCard = (prop) => {
   const { event } = prop;
@@ -76,6 +77,9 @@ const EventCard = (prop) => {
           <p id="EndDate">Ends: {event.end_date}</p>
           <p id="Location">Venue: {event.location}</p>
           <p id="Description">Description: {event.description}</p>
+          <div className="CalendarButtonWrapper">
+            <GoogleCalendarButton event={event} />
+          </div>
         </li>
       ) : !editing ? (
         <li className="EventCard">
@@ -84,6 +88,10 @@ const EventCard = (prop) => {
           <p id="EndDate">Ends: {event.end_date}</p>
           <p id="Location">Venue: {event.location}</p>
           <p id="Description">Description: {event.description}</p>
+          <div className="CalendarButtonWrapper">
+            <GoogleCalendarButton event={event} />
+          </div>
+
           {!deleting ? (
             <>
               <button
