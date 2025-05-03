@@ -5,53 +5,60 @@ import { LoggedInUserContext } from "../Contexts/LoggedInUser";
 const Signin = ({ setProfile }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
   const { loggedInUser, setLoggedInUser } = useContext(LoggedInUserContext);
 
-  const signinHandler = () => {
-    signIn(username, password)
-      .then((response) => {
-        console.log(response.headers.staff_id);
-        setLoggedInUser(response.headers.staff_id);
-        sessionStorage.setItem("staff_id", response.headers.staff_id);
-      })
-      .then(() => {
-        setUsername("");
-        setPassword("");
-      });
+  const signinHandler = async (e) => {
+    e.preventDefault(); // Prevent form submit reload
+    setError(null); // Clear previous errors
+    try {
+      const response = await signIn(username, password);
+      const staffId = response.headers.staff_id;
+
+      setLoggedInUser(staffId);
+      sessionStorage.setItem("staff_id", staffId);
+      setUsername("");
+      setPassword("");
+    } catch (err) {
+      setError("Login failed. Please check your credentials.");
+    }
   };
+
   const signoutHandler = () => {
     setLoggedInUser(null);
     sessionStorage.clear();
   };
 
-  const usernameHandler = (e) => {
-    e.preventDefault();
-    setUsername(e.target.value);
-  };
-  const passwordHandler = (e) => {
-    e.preventDefault();
-    setPassword(e.target.value);
-  };
-
   return (
     <div>
       {!loggedInUser ? (
-        <>
-          <label>Username</label>
-          <input onChange={usernameHandler} value={username} />
-          <br />
-          <label>Password</label>
-          <input type="password" onChange={passwordHandler} value={password} />
-          <br />
-          <button onClick={signinHandler}>Sign In</button>
-        </>
-      ) : (
-        <>
-          <div id="">
-            <p>Staff Logged In</p>
+        <form onSubmit={signinHandler} className="SignInForm">
+          <div>
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
           </div>
+          <div>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          {error && <p style={{ color: "red" }}>{error}</p>}
+          <button type="submit">Sign In</button>
+        </form>
+      ) : (
+        <div>
+          <p>Staff Logged In</p>
           <button onClick={signoutHandler}>Sign out</button>
-        </>
+        </div>
       )}
     </div>
   );

@@ -10,19 +10,29 @@ const SignUp = () => {
     is_staff: "",
   });
 
+  const [loading, setLoading] = useState(false); // To handle loading state
+  const [error, setError] = useState(""); // To handle error state
+
   const registrationHandler = () => {
+    setLoading(true); // Set loading to true while waiting for response
+    setError(""); // Clear any previous errors
+
     signUp(registrationDetails)
       .then((response) => {
-        console.log(response);
         setLoggedInUser(response.headers.staff_id);
         sessionStorage.setItem("staff_id", response.headers.staff_id);
-      })
-      .then(() => {
         setRegistrationDetails({
           username: "",
           password: "",
           is_staff: "",
         });
+      })
+      .catch((err) => {
+        setError("There was an error registering. Please try again.");
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false); // Set loading to false once the process finishes
       });
   };
 
@@ -42,8 +52,7 @@ const SignUp = () => {
   return (
     <div>
       {!loggedInUser ? (
-        <>
-          <label>Username</label>
+        <div className="SignupForm">
           <input
             type="text"
             onChange={onChange}
@@ -52,7 +61,6 @@ const SignUp = () => {
             value={registrationDetails.username}
           />
           <br />
-          <label>Password</label>
           <input
             type="password"
             onChange={onChange}
@@ -86,12 +94,16 @@ const SignUp = () => {
               />
             </div>
           </fieldset>
-          <button onClick={registrationHandler}>Register</button>
-        </>
+          <br />
+          {error && <p style={{ color: "red" }}>{error}</p>}
+          <button onClick={registrationHandler} disabled={loading}>
+            {loading ? "Registering..." : "Register"}
+          </button>
+        </div>
       ) : (
         <>
-          <div id="">
-            <p>Welcome</p>
+          <div>
+            <p>Welcome, you can edit your events here</p>
           </div>
           <button onClick={signoutHandler}>Sign out</button>
         </>

@@ -5,12 +5,14 @@ import { useContext, useState, useEffect } from "react";
 import { deleteEvent } from "../api";
 import { updateEvent } from "../api";
 import GoogleCalendarButton from "./GoogleCalanderButton";
+import SendEventEmail from "./SendEventEmail";
 
 const EventCard = (prop) => {
   const { event } = prop;
   const { loggedInUser } = useContext(LoggedInUserContext);
   const { deleting, setDeleting } = useContext(DeletingContext);
   const { editing, setEditing } = useContext(EditingContext);
+  const [showEmailForm, setShowEmailForm] = useState(false);
   const [msg, setMsg] = useState("");
 
   const [eventDetails, setEventDetails] = useState({
@@ -73,10 +75,40 @@ const EventCard = (prop) => {
       {!loggedInUser ? (
         <li className="EventCard">
           <h2 id="EventName">{event.name}</h2>
-          <p id="StartDate">Starts: {event.start_date}</p>
-          <p id="EndDate">Ends: {event.end_date}</p>
+          <p id="StartDate">
+            Starts:{" "}
+            {new Date(event.start_date).toLocaleDateString(undefined, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+          <p id="EndDate">
+            Ends:{" "}
+            {new Date(event.end_date).toLocaleDateString(undefined, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
           <p id="Location">Venue: {event.location}</p>
           <p id="Description">Description: {event.description}</p>
+
+          {!showEmailForm ? (
+            <div className="EmailButtonWrapper">
+              <button className="Button" onClick={() => setShowEmailForm(true)}>
+                📧 Get your tickets!
+              </button>
+            </div>
+          ) : (
+            <div className="AlignForm">
+              <SendEventEmail
+                event={event}
+                onClose={() => setShowEmailForm(false)}
+              />
+            </div>
+          )}
+
           <div className="CalendarButtonWrapper">
             <GoogleCalendarButton event={event} />
           </div>
@@ -84,8 +116,22 @@ const EventCard = (prop) => {
       ) : !editing ? (
         <li className="EventCard">
           <h2 id="EventName">{event.name}</h2>
-          <p id="StartDate">Starts: {event.start_date}</p>
-          <p id="EndDate">Ends: {event.end_date}</p>
+          <p id="StartDate">
+            Starts:{" "}
+            {new Date(event.start_date).toLocaleDateString(undefined, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+          <p id="EndDate">
+            Ends:{" "}
+            {new Date(event.end_date).toLocaleDateString(undefined, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
           <p id="Location">Venue: {event.location}</p>
           <p id="Description">Description: {event.description}</p>
           <div className="CalendarButtonWrapper">

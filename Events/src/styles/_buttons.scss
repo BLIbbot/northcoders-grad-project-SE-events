@@ -1,0 +1,24 @@
+.Button {
+  margin: $spacing-xs;
+  padding: 0;
+
+  &:hover {
+    background-color: darkslateblue;
+  }
+}
+
+.CancelButton {
+  @include button-style($cancel-bg, #333, $cancel-hover);
+}
+
+.GoogleCalendarButton {
+  @include button-style($primary-color, white, $primary-hover);
+  padding: $spacing-sm $spacing-lg;
+  border-radius: $radius-md;
+  text-decoration: none;
+  margin-top: $spacing-sm;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-sm;
+  font-weight: bold;
+}

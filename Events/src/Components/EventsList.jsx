@@ -15,13 +15,21 @@ const EventsList = () => {
   return (
     <>
       <h2 id="Header">Check out all of the available events</h2>
-      {
-        <ul className="EventList">
-          {events.map((event) => {
-            return <EventCard event={event} key={event.id} />;
-          })}
-        </ul>
-      }
+      {events ? (
+        <div>
+          <ul id="EventList">
+            {events.map((event) => {
+              return (
+                <li>
+                  <EventCard event={event} key={event.id} />
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ) : (
+        <div className="Spinner"></div>
+      )}
     </>
   );
 };

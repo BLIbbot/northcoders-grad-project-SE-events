@@ -22,31 +22,50 @@ function App() {
       {loggedInUser ? (
         <>
           <Header />
-          <button onClick={signoutHandler}>Sign out</button>
+          <div className="AccountSection">
+            <button onClick={signoutHandler}>Sign out</button>
+          </div>
           <MyEvents />
         </>
       ) : (
         <>
           <Header />
           {!signInPage ? (
-            <button onClick={() => setSignInPage("signIn")}>Sign in</button>
+            <>
+              <div className="AccountSection">
+                <button onClick={() => setSignInPage("signIn")}>Sign in</button>
+              </div>
+              <EventsList />
+            </>
           ) : (
             <>
-              <Signin />
-              <button onClick={() => setSignInPage("")}>Back</button>
+              {!signUpPage ? (
+                <>
+                  <div className="MainContainer">
+                    <div className="AccountSection">
+                      <Signin />
+                      <button type="button" onClick={() => setSignInPage("")}>
+                        Back
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSignUpPage("signUp")}
+                      >
+                        Sign up
+                      </button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="AccountSection">
+                    <SignUp />
+                    <button onClick={() => setSignUpPage("")}>Back</button>
+                  </div>
+                </>
+              )}
             </>
           )}
-          <br></br>
-          <br></br>
-          {!signUpPage ? (
-            <button onClick={() => setSignUpPage("signUp")}>Sign up</button>
-          ) : (
-            <>
-              <SignUp />
-              <button onClick={() => setSignUpPage("")}>Back</button>
-            </>
-          )}
-          <EventsList />
         </>
       )}
     </>

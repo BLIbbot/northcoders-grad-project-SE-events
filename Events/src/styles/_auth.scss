@@ -1,0 +1,41 @@
+/* Sign in & Register */
+.AccountSection {
+  display: grid;
+  align-self: center;
+  justify-self: center;
+}
+
+.SignupForm {
+  @include flex-center;
+  flex-direction: column;
+  height: 100vh;
+}
+
+input,
+button,
+fieldset {
+  margin: $spacing-xl 0;
+  width: 250px;
+  padding: $spacing-md;
+}
+
+fieldset {
+  border: 1px solid $border-color;
+  padding: $spacing-lg;
+  width: 270px;
+
+  div {
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+    margin: $spacing-sm 0;
+  }
+}
+
+legend {
+  font-weight: bold;
+}
+
+button {
+  @include button-style($button-color, white, $button-hover);
+}

@@ -1,0 +1,115 @@
+/* Events */
+#EventInput {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  background-color: $background-light;
+  border: solid 2px black;
+  border-radius: $radius-lg;
+  height: 400px;
+  aspect-ratio: 1/1;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "name"
+    "startdate"
+    "enddate"
+    "location"
+    "desc";
+  font-family: $font-family;
+}
+
+#EventList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+  grid-template-rows: auto;
+  flex-wrap: wrap;
+}
+
+.EventCard {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  background-color: $background-light;
+  border: solid 2px black;
+  border-radius: $radius-lg;
+  height: 400px;
+  aspect-ratio: 1/1;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "name name"
+    "startdate enddate"
+    "location location"
+    "desc desc"
+    "edit delete"
+    "Ndelete Ydelete"
+    "ebutton ebutton"
+    "cbutton cbutton";
+  font-family: $font-family;
+}
+
+li {
+  list-style-type: none;
+}
+
+#EventName,
+#Location,
+#StartDate,
+#EndDate,
+#Description {
+  margin: 5px;
+  padding: 0;
+  font-size: 1em;
+  align-self: center;
+}
+
+#EventName {
+  grid-area: name;
+  justify-self: center;
+}
+#Location {
+  grid-area: location;
+  padding: 5px;
+  justify-self: left;
+}
+#StartDate {
+  grid-area: startdate;
+  padding: 5px;
+  justify-self: center;
+}
+#EndDate {
+  grid-area: enddate;
+  padding: 5px;
+  justify-self: center;
+}
+
+#Description {
+  grid-area: desc;
+  padding: 5px;
+  word-wrap: break-word;
+  height: 50px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+#CenterEventButton {
+  @include flex-center;
+}
+
+#DeleteButton {
+  grid-area: delete;
+}
+#YDel {
+  grid-area: Ndelete;
+}
+#NDel {
+  grid-area: Ydelete;
+}
+#EditButton {
+  grid-area: edit;
+}
+#AddEventButton {
+  align-self: center;
+}
