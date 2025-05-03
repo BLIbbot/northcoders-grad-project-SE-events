@@ -4,6 +4,8 @@ import { LoggedInUserContext } from "../Contexts/LoggedInUser";
 import { DeletingContext } from "../Contexts/DeletingHandler";
 import { EditingContext } from "../Contexts/EditingHandler";
 import EventCard from "./EventCard";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const MyEvents = () => {
   const [staffEvents, setStaffEvents] = useState([]);
@@ -16,11 +18,32 @@ const MyEvents = () => {
   const [newEventDetails, setNewEventDetails] = useState({
     name: "",
     location: "",
-    start_date: "",
-    end_date: "",
+    start_date: new Date(),
+    end_date: new Date(),
     description: "",
     staff_id: loggedInUser,
   });
+
+  // Handle event deletion
+  const handleDeleteEvent = (eventId) => {
+    setStaffEvents(staffEvents.filter((event) => event.event_id !== eventId));
+  };
+
+  // Handle event update
+  const handleEditEvent = (updatedEvent) => {
+    setStaffEvents(
+      staffEvents.map((event) =>
+        event.event_id === updatedEvent.event_id ? updatedEvent : event
+      )
+    );
+  };
+
+  const handleDateChange = (date, field) => {
+    setNewEventDetails({
+      ...newEventDetails,
+      [field]: date,
+    });
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -41,7 +64,13 @@ const MyEvents = () => {
   };
 
   const submitAddEventHandler = () => {
-    addEvent(newEventDetails)
+    const formattedEvent = {
+      ...newEventDetails,
+      start_date: newEventDetails.start_date.toISOString().split("T")[0],
+      end_date: newEventDetails.end_date.toISOString().split("T")[0],
+    };
+
+    addEvent(formattedEvent)
       .then(() => {
         setMsg("Event added");
       })
@@ -60,8 +89,8 @@ const MyEvents = () => {
         setNewEventDetails({
           name: "",
           location: "",
-          start_date: "",
-          end_date: "",
+          start_date: new Date(),
+          end_date: new Date(),
           description: "",
           staff_id: loggedInUser,
         });
@@ -104,16 +133,16 @@ const MyEvents = () => {
             value={newEventDetails.location}
           />
           <br />
-          <input
-            onChange={onChange}
-            placeholder="start_date"
-            value={newEventDetails.start_date}
+          <DatePicker
+            selected={newEventDetails.start_date}
+            onChange={(date) => handleDateChange(date, "start_date")}
+            placeholderText="Start Date"
           />
           <br />
-          <input
-            onChange={onChange}
-            placeholder="end_date"
-            value={newEventDetails.end_date}
+          <DatePicker
+            selected={newEventDetails.end_date}
+            onChange={(date) => handleDateChange(date, "end_date")}
+            placeholderText="End Date"
           />
           <br />
           <input
@@ -131,7 +160,12 @@ const MyEvents = () => {
       ) : (
         <ul className="EventList">
           {staffEvents.map((event) => (
-            <EventCard event={event} key={event.id} />
+            <EventCard
+              event={event}
+              key={event.id}
+              onDelete={handleDeleteEvent}
+              onEdit={handleEditEvent}
+            />
           ))}
         </ul>
       )}

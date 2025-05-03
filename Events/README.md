@@ -5,7 +5,7 @@ Password: Tester
 
 ## Project Summary
 
-This is an events platform project made for the northcoders grad launchpad.
+This is an events web platform project made for the northcoders grad launchpad.
 Event goers can view, sign up for, and add events to their personal google calendars.
 Staff members can create and manage their events.
 Please note that events have only been created with the most basic example data.

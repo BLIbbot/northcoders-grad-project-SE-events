@@ -1,7 +1,9 @@
 import { LoggedInUserContext } from "../Contexts/LoggedInUser";
 import { DeletingContext } from "../Contexts/DeletingHandler";
 import { EditingContext } from "../Contexts/EditingHandler";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { deleteEvent } from "../api";
 import { updateEvent } from "../api";
 import GoogleCalendarButton from "./GoogleCalanderButton";
@@ -12,23 +14,31 @@ const EventCard = (prop) => {
   const { loggedInUser } = useContext(LoggedInUserContext);
   const { deleting, setDeleting } = useContext(DeletingContext);
   const { editing, setEditing } = useContext(EditingContext);
+  const [loading, setLoading] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [msg, setMsg] = useState("");
-
   const [eventDetails, setEventDetails] = useState({
     name: "",
     location: "",
-    start_date: "",
-    end_date: "",
+    start_date: new Date(),
+    end_date: new Date(),
     description: "",
     staff_id: loggedInUser,
   });
+
+  const handleDateChange = (date, field) => {
+    setEventDetails({
+      ...eventDetails,
+      [field]: date, // Update the specific date field (start_date or end_date)
+    });
+  };
 
   const deleteEventHandler = () => {
     setDeleting("maybe");
   };
 
   const confirmDeleteEventHandler = (event_id) => {
+    setLoading(true);
     deleteEvent(event_id)
       .then(() => {
         setDeleting(null);
@@ -36,15 +46,27 @@ const EventCard = (prop) => {
       .then(() => {
         setMsg("Event deleted");
       })
-      .then(() => {
+      .catch((error) => {
+        setMsg("Error deleting event");
+      })
+      .finally(() => {
+        setLoading(false);
         setTimeout(() => {
           setMsg("");
         }, 2000);
       });
   };
 
-  const editEventHandler = () => {
-    setEditing("editing");
+  const editEventHandler = (event_id) => {
+    setEditing(event_id);
+    setEventDetails({
+      name: event.name,
+      location: event.location,
+      start_date: new Date(event.start_date),
+      end_date: new Date(event.end_date),
+      description: event.description,
+      staff_id: loggedInUser,
+    });
   };
 
   const onChange = (e) => {
@@ -55,6 +77,7 @@ const EventCard = (prop) => {
   };
 
   const updateHandler = (eventDetails, event_id) => {
+    setLoading(true);
     updateEvent(eventDetails, event_id)
       .then((response) => {
         setEditing(null);
@@ -62,7 +85,11 @@ const EventCard = (prop) => {
       .then(() => {
         setMsg("Event details updated");
       })
-      .then(() => {
+      .catch((error) => {
+        setMsg("Error updating event");
+      })
+      .finally(() => {
+        setLoading(false);
         setTimeout(() => {
           setMsg("");
         }, 2000);
@@ -115,7 +142,7 @@ const EventCard = (prop) => {
             <GoogleCalendarButton event={event} />
           </div>
         </li>
-      ) : !editing ? (
+      ) : editing !== event.event_id ? (
         <li className="EventCard">
           <h2 id="EventName">{event.name}</h2>
           <p id="StartDate">
@@ -143,26 +170,30 @@ const EventCard = (prop) => {
           </div>
 
           {!deleting ? (
-            <>
-              <button
-                className="Button"
-                id="DeleteButton"
-                onClick={() => {
-                  deleteEventHandler();
-                }}
-              >
-                Delete
-              </button>
-              <button
-                className="Button"
-                id="EditButton"
-                onClick={() => {
-                  editEventHandler(event.event_id);
-                }}
-              >
-                Edit
-              </button>
-            </>
+            loading ? (
+              <div className="Spinner"></div>
+            ) : (
+              <>
+                <button
+                  className="Button"
+                  id="DeleteButton"
+                  onClick={() => {
+                    deleteEventHandler();
+                  }}
+                >
+                  Delete
+                </button>
+                <button
+                  className="Button"
+                  id="EditButton"
+                  onClick={() => {
+                    editEventHandler(event.event_id);
+                  }}
+                >
+                  Edit
+                </button>
+              </>
+            )
           ) : (
             <>
               <p id="msgbox">Are you sure?</p>
@@ -188,6 +219,8 @@ const EventCard = (prop) => {
             </>
           )}
         </li>
+      ) : loading ? (
+        <div className="Spinner"></div>
       ) : (
         <>
           <li id="EventInput">
@@ -203,16 +236,16 @@ const EventCard = (prop) => {
               value={eventDetails.location}
             />
             <br />
-            <input
-              onChange={onChange}
-              placeholder="start_date"
-              value={eventDetails.start_date}
+            <DatePicker
+              selected={eventDetails.start_date}
+              onChange={(date) => handleDateChange(date, "start_date")}
+              placeholderText="Start Date"
             />
             <br />
-            <input
-              onChange={onChange}
-              placeholder="end_date"
-              value={eventDetails.end_date}
+            <DatePicker
+              selected={eventDetails.end_date}
+              onChange={(date) => handleDateChange(date, "end_date")}
+              placeholderText="End Date"
             />
             <br />
             <input
