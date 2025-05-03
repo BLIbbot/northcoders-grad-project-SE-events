@@ -1,12 +1,49 @@
-# React + Vite
+## Test account access details
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Username: Tester
+Password: Tester
 
-Currently, two official plugins are available:
+## Project Summary
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This is an events platform project made for the northcoders grad launchpad.
+Event goers can view, sign up for, and add events to their personal google calendars.
+Staff members can create and manage their events.
+Please note that events have only been created with the most basic example data.
 
-## Expanding the ESLint configuration
+## Run this project locally
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Prerequisites
+
+Before you begin, make sure you have the following installed:
+
+- [Node.js](https://nodejs.org/) (version 14 or higher)
+- [npm](https://www.npmjs.com/) (npm comes with Node.js, so installing Node.js will also install npm)
+
+## 1. Clone the Repository
+
+First, clone the repository to your local machine using the following command:
+
+- git clone https://github.com/BLIbbot/northcoders-grad-project-SE-events.git
+
+## 2. Navigate into the Project Directory
+
+Change into the directory of your newly cloned project using the following command:
+
+- cd northcoders-grad-project-SE-events
+
+## 3. Install Dependencies
+
+The project requires certain dependencies to run. Run the following command to install the necessary packages:
+
+- npm install
+
+## 4. Run Development Server
+
+You can start the local development server by using the following command:
+npm start
+
+You should be able to access the React app by opening your browser and navigating to:
+
+- http://localhost:3000
+
+To stop the development server press CTRL + C in the terminal where the server is running.
