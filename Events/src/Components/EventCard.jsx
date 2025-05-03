@@ -83,14 +83,16 @@ const EventCard = (prop) => {
               day: "numeric",
             })}
           </p>
-          <p id="EndDate">
-            Ends:{" "}
-            {new Date(event.end_date).toLocaleDateString(undefined, {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
+          {event.end_date && !isNaN(new Date(event.end_date)) ? (
+            <p id="EndDate">
+              Ends:{" "}
+              {new Date(event.end_date).toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+          ) : null}
           <p id="Location">Venue: {event.location}</p>
           <p id="Description">Description: {event.description}</p>
 
@@ -124,14 +126,16 @@ const EventCard = (prop) => {
               day: "numeric",
             })}
           </p>
-          <p id="EndDate">
-            Ends:{" "}
-            {new Date(event.end_date).toLocaleDateString(undefined, {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
+          {event.end_date && !isNaN(new Date(event.end_date)) ? (
+            <p id="EndDate">
+              Ends:{" "}
+              {new Date(event.end_date).toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+          ) : null}
           <p id="Location">Venue: {event.location}</p>
           <p id="Description">Description: {event.description}</p>
           <div className="CalendarButtonWrapper">
