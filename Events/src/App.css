@@ -243,6 +243,20 @@ li {
   background-color: darkslateblue;
 }
 
+.EventFormContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.EventInputForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
 /* google calendar */
 
 .CalendarButtonWrapper {

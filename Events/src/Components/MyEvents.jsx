@@ -120,39 +120,44 @@ const MyEvents = () => {
           </button>
         </div>
       ) : (
-        <li className="Eventinput">
-          <input
-            onChange={onChange}
-            placeholder="name"
-            value={newEventDetails.name}
-          />
-          <br />
-          <input
-            onChange={onChange}
-            placeholder="location"
-            value={newEventDetails.location}
-          />
-          <br />
-          <DatePicker
-            selected={newEventDetails.start_date}
-            onChange={(date) => handleDateChange(date, "start_date")}
-            placeholderText="Start Date"
-          />
-          <br />
-          <DatePicker
-            selected={newEventDetails.end_date}
-            onChange={(date) => handleDateChange(date, "end_date")}
-            placeholderText="End Date"
-          />
-          <br />
-          <input
-            onChange={onChange}
-            placeholder="description"
-            value={newEventDetails.description}
-          />
-          <br />
-          <button onClick={submitAddEventHandler}>Add Event</button>
-        </li>
+        <div className="EventFormContainer">
+          <div className="EventInputForm">
+            <input
+              name="name"
+              onChange={onChange}
+              value={newEventDetails.name}
+              placeholder="Name"
+            />
+            <br />
+            <input
+              name="location"
+              onChange={onChange}
+              value={newEventDetails.location}
+              placeholder="Location"
+            />
+            <br />
+            <DatePicker
+              selected={newEventDetails.start_date}
+              onChange={(date) => handleDateChange(date, "start_date")}
+              placeholderText="Start Date"
+            />
+            <br />
+            <DatePicker
+              selected={newEventDetails.end_date}
+              onChange={(date) => handleDateChange(date, "end_date")}
+              placeholderText="End Date"
+            />
+            <br />
+            <input
+              name="description"
+              onChange={onChange}
+              value={newEventDetails.description}
+              placeholder="Description"
+            />
+            <br />
+            <button onClick={submitAddEventHandler}>Add Event</button>
+          </div>
+        </div>
       )}
 
       {loading ? (
