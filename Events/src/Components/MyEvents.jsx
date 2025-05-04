@@ -127,17 +127,15 @@ const MyEvents = () => {
         <div className="EventFormContainer">
           <div className="EventInputForm">
             <input
-              name="name"
               onChange={onChange}
+              placeholder="name"
               value={newEventDetails.name}
-              placeholder="Name"
             />
             <br />
             <input
-              name="location"
               onChange={onChange}
+              placeholder="location"
               value={newEventDetails.location}
-              placeholder="Location"
             />
             <br />
             <DatePicker
@@ -153,10 +151,9 @@ const MyEvents = () => {
             />
             <br />
             <input
-              name="description"
               onChange={onChange}
+              placeholder="description"
               value={newEventDetails.description}
-              placeholder="Description"
             />
             <br />
             <button onClick={submitAddEventHandler}>Add Event</button>
