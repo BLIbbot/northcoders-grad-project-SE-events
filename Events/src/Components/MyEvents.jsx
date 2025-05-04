@@ -165,16 +165,20 @@ const MyEvents = () => {
       {loading ? (
         <div className="Spinner"></div>
       ) : (
-        <ul className="EventList">
-          {staffEvents.map((event) => (
-            <EventCard
-              event={event}
-              key={event.id}
-              onDelete={handleDeleteEvent}
-              onEdit={handleEditEvent}
-            />
-          ))}
-        </ul>
+        <div>
+          <ul id="MyEventList">
+            {staffEvents.map((event) => (
+              <li key={event.id}>
+                <EventCard
+                  event={event}
+                  key={event.id}
+                  onDelete={handleDeleteEvent}
+                  onEdit={handleEditEvent}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </>
   );

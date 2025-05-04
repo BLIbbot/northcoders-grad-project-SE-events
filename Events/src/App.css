@@ -1,5 +1,4 @@
-/*Header*/
-
+/* Header */
 #Header {
   display: flex;
   justify-content: center;
@@ -95,7 +94,7 @@ button:hover {
   background-color: darkgoldenrod;
 }
 
-/*Events*/
+/* Events */
 #EventInput {
   display: grid;
   justify-content: center;
@@ -135,6 +134,16 @@ button:hover {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 10px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+#MyEventList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 80px;
   max-width: 1000px;
   margin: 0 auto;
   padding: 0;
@@ -257,7 +266,7 @@ li {
   padding: 20px;
 }
 
-/* google calendar */
+/* Google Calendar */
 
 .CalendarButtonWrapper {
   grid-area: cbutton;
