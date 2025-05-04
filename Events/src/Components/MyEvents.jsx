@@ -63,6 +63,10 @@ const MyEvents = () => {
     setAddingEvent("Adding");
   };
 
+  const cancelSubmitAddEventHandler = () => {
+    setAddingEvent(null);
+  };
+
   const submitAddEventHandler = () => {
     const formattedEvent = {
       ...newEventDetails,
@@ -156,6 +160,7 @@ const MyEvents = () => {
             />
             <br />
             <button onClick={submitAddEventHandler}>Add Event</button>
+            <button onClick={cancelSubmitAddEventHandler}>Cancel</button>
           </div>
         </div>
       )}
