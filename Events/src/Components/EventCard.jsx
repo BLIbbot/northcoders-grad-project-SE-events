@@ -1,22 +1,24 @@
+import { useContext, useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 import { LoggedInUserContext } from "../Contexts/LoggedInUser";
 import { DeletingContext } from "../Contexts/DeletingHandler";
 import { EditingContext } from "../Contexts/EditingHandler";
-import { useContext, useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { deleteEvent } from "../api";
-import { updateEvent } from "../api";
+
+import { deleteEvent, updateEvent } from "../api";
 import GoogleCalendarButton from "./GoogleCalanderButton";
 import SendEventEmail from "./SendEventEmail";
 
-const EventCard = (prop) => {
-  const { event } = prop;
+const EventCard = ({ event }) => {
   const { loggedInUser } = useContext(LoggedInUserContext);
   const { deleting, setDeleting } = useContext(DeletingContext);
   const { editing, setEditing } = useContext(EditingContext);
+
   const [loading, setLoading] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [msg, setMsg] = useState("");
+
   const [eventDetails, setEventDetails] = useState({
     name: "",
     location: "",
@@ -26,11 +28,32 @@ const EventCard = (prop) => {
     staff_id: loggedInUser,
   });
 
+  useEffect(() => {
+    if (editing === event.event_id) {
+      setEventDetails({
+        name: event.name || "",
+        location: event.location || "",
+        start_date: event.start_date ? new Date(event.start_date) : new Date(),
+        end_date: event.end_date ? new Date(event.end_date) : new Date(),
+        description: event.description || "",
+        staff_id: loggedInUser,
+      });
+    }
+  }, [editing, event, loggedInUser]);
+
   const handleDateChange = (date, field) => {
-    setEventDetails({
-      ...eventDetails,
-      [field]: date, // Update the specific date field (start_date or end_date)
-    });
+    setEventDetails((prev) => ({
+      ...prev,
+      [field]: date,
+    }));
+  };
+
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    setEventDetails((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const deleteEventHandler = () => {
@@ -42,38 +65,19 @@ const EventCard = (prop) => {
     deleteEvent(event_id)
       .then(() => {
         setDeleting(null);
-      })
-      .then(() => {
         setMsg("Event deleted");
       })
-      .catch((error) => {
+      .catch(() => {
         setMsg("Error deleting event");
       })
       .finally(() => {
         setLoading(false);
-        setTimeout(() => {
-          setMsg("");
-        }, 2000);
+        setTimeout(() => setMsg(""), 2000);
       });
   };
 
   const editEventHandler = (event_id) => {
-    setEditing(event_id);
-    setEventDetails({
-      name: event.name,
-      location: event.location,
-      start_date: new Date(event.start_date),
-      end_date: new Date(event.end_date),
-      description: event.description,
-      staff_id: loggedInUser,
-    });
-  };
-
-  const onChange = (e) => {
-    setEventDetails({
-      ...eventDetails,
-      [e.target.placeholder]: e.target.value,
-    });
+    setEditing(event_id); // Triggers useEffect to populate form
   };
 
   const updateHandler = (eventDetails, event_id) => {
@@ -84,27 +88,25 @@ const EventCard = (prop) => {
     };
     setLoading(true);
     updateEvent(formattedEvent, event_id)
-      .then((response) => {
-        setEditing(null);
-      })
       .then(() => {
+        setEditing(null);
         setMsg("Event details updated");
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setMsg("Error updating event");
       })
       .finally(() => {
         setLoading(false);
-        setTimeout(() => {
-          setMsg("");
-        }, 2000);
+        setTimeout(() => setMsg(""), 2000);
       });
   };
 
   return (
     <>
       <p id="ErrorMsg">{msg}</p>
+
+      {/* Public View (not logged in) */}
       {!loggedInUser ? (
         <div className="EventCard">
           <h2 id="EventName">{event.name}</h2>
@@ -116,7 +118,7 @@ const EventCard = (prop) => {
               day: "numeric",
             })}
           </p>
-          {event.end_date && !isNaN(new Date(event.end_date)) ? (
+          {event.end_date && !isNaN(new Date(event.end_date)) && (
             <p id="EndDate">
               Ends:{" "}
               {new Date(event.end_date).toLocaleDateString(undefined, {
@@ -125,7 +127,7 @@ const EventCard = (prop) => {
                 day: "numeric",
               })}
             </p>
-          ) : null}
+          )}
           <p id="Location">Venue: {event.location}</p>
           <p id="Description">Description: {event.description}</p>
 
@@ -149,6 +151,7 @@ const EventCard = (prop) => {
           </div>
         </div>
       ) : editing !== event.event_id ? (
+        // Admin view, not editing
         <div className="EventCard">
           <h2 id="EventName">{event.name}</h2>
           <p id="StartDate">
@@ -159,7 +162,7 @@ const EventCard = (prop) => {
               day: "numeric",
             })}
           </p>
-          {event.end_date && !isNaN(new Date(event.end_date)) ? (
+          {event.end_date && !isNaN(new Date(event.end_date)) && (
             <p id="EndDate">
               Ends:{" "}
               {new Date(event.end_date).toLocaleDateString(undefined, {
@@ -168,109 +171,91 @@ const EventCard = (prop) => {
                 day: "numeric",
               })}
             </p>
-          ) : null}
+          )}
           <p id="Location">Venue: {event.location}</p>
           <p id="Description">Description: {event.description}</p>
+
           <div className="CalendarButtonWrapper">
             <GoogleCalendarButton event={event} />
           </div>
 
-          {!deleting ? (
-            loading ? (
-              <div className="Spinner"></div>
-            ) : (
-              <>
-                <button
-                  className="Button"
-                  id="DeleteButton"
-                  onClick={() => {
-                    deleteEventHandler();
-                  }}
-                >
-                  Delete
-                </button>
-                <button
-                  className="Button"
-                  id="EditButton"
-                  onClick={() => {
-                    editEventHandler(event.event_id);
-                  }}
-                >
-                  Edit
-                </button>
-              </>
-            )
-          ) : (
+          {deleting ? (
             <>
               <p id="msgbox">Are you sure?</p>
-              <br></br>
               <button
                 id="YDel"
                 className="Button"
-                onClick={() => {
-                  confirmDeleteEventHandler(event.event_id);
-                }}
+                onClick={() => confirmDeleteEventHandler(event.event_id)}
               >
                 Yes
               </button>
-              <br></br>
-              <br></br>
               <button
                 id="NDel"
                 className="Button"
                 onClick={() => setDeleting(null)}
               >
-                no
+                No
+              </button>
+            </>
+          ) : loading ? (
+            <div className="Spinner" />
+          ) : (
+            <>
+              <button
+                className="Button"
+                id="DeleteButton"
+                onClick={deleteEventHandler}
+              >
+                Delete
+              </button>
+              <button
+                className="Button"
+                id="EditButton"
+                onClick={() => editEventHandler(event.event_id)}
+              >
+                Edit
               </button>
             </>
           )}
         </div>
       ) : loading ? (
-        <div className="Spinner"></div>
+        <div className="Spinner" />
       ) : (
-        <>
-          <li className="EventCard EditEventForm">
-            <input
-              onChange={onChange}
-              placeholder="name"
-              value={eventDetails.name}
-            />
-            <input
-              onChange={onChange}
-              placeholder="location"
-              value={eventDetails.location}
-            />
-            <DatePicker
-              selected={eventDetails.start_date}
-              onChange={(date) => handleDateChange(date, "start_date")}
-              placeholderText="Start Date"
-            />
-            <DatePicker
-              selected={eventDetails.end_date}
-              onChange={(date) => handleDateChange(date, "end_date")}
-              placeholderText="End Date"
-            />
-            <input
-              onChange={onChange}
-              placeholder="description"
-              value={eventDetails.description}
-            />
-            <button
-              onClick={() => {
-                updateHandler(eventDetails, event.event_id);
-              }}
-            >
-              Update
-            </button>
-            <button
-              onClick={() => {
-                setEditing(null);
-              }}
-            >
-              Cancel
-            </button>
-          </li>
-        </>
+        // Edit form view
+        <div className="EventCard EditEventForm">
+          <input
+            name="name"
+            value={eventDetails.name}
+            onChange={onChange}
+            placeholder="Event Name"
+          />
+          <input
+            name="location"
+            value={eventDetails.location}
+            onChange={onChange}
+            placeholder="Location"
+          />
+          <DatePicker
+            selected={eventDetails.start_date}
+            onChange={(date) => handleDateChange(date, "start_date")}
+            placeholderText="Start Date"
+          />
+          <DatePicker
+            selected={eventDetails.end_date}
+            onChange={(date) => handleDateChange(date, "end_date")}
+            placeholderText="End Date"
+          />
+          <input
+            name="description"
+            value={eventDetails.description}
+            onChange={onChange}
+            placeholder="Description"
+          />
+          <button onClick={() => updateHandler(eventDetails, event.event_id)}>
+            Update
+          </button>
+          <button onClick={() => setEditing(null)}>Cancel</button>
+        </div>
       )}
     </>
   );
