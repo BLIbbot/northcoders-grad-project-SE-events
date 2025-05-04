@@ -77,8 +77,13 @@ const EventCard = (prop) => {
   };
 
   const updateHandler = (eventDetails, event_id) => {
+    const formattedEvent = {
+      ...eventDetails,
+      start_date: eventDetails.start_date.toISOString().split("T")[0],
+      end_date: eventDetails.end_date.toISOString().split("T")[0],
+    };
     setLoading(true);
-    updateEvent(eventDetails, event_id)
+    updateEvent(formattedEvent, event_id)
       .then((response) => {
         setEditing(null);
       })
@@ -86,6 +91,7 @@ const EventCard = (prop) => {
         setMsg("Event details updated");
       })
       .catch((error) => {
+        console.log(error);
         setMsg("Error updating event");
       })
       .finally(() => {
@@ -100,7 +106,7 @@ const EventCard = (prop) => {
     <>
       <p id="ErrorMsg">{msg}</p>
       {!loggedInUser ? (
-        <li className="EventCard">
+        <div className="EventCard">
           <h2 id="EventName">{event.name}</h2>
           <p id="StartDate">
             Starts:{" "}
@@ -141,9 +147,9 @@ const EventCard = (prop) => {
           <div className="CalendarButtonWrapper">
             <GoogleCalendarButton event={event} />
           </div>
-        </li>
+        </div>
       ) : editing !== event.event_id ? (
-        <li className="EventCard">
+        <div className="EventCard">
           <h2 id="EventName">{event.name}</h2>
           <p id="StartDate">
             Starts:{" "}
@@ -218,42 +224,37 @@ const EventCard = (prop) => {
               </button>
             </>
           )}
-        </li>
+        </div>
       ) : loading ? (
         <div className="Spinner"></div>
       ) : (
         <>
-          <li id="EventInput">
+          <li className="EventCard EditEventForm">
             <input
               onChange={onChange}
               placeholder="name"
               value={eventDetails.name}
             />
-            <br />
             <input
               onChange={onChange}
               placeholder="location"
               value={eventDetails.location}
             />
-            <br />
             <DatePicker
               selected={eventDetails.start_date}
               onChange={(date) => handleDateChange(date, "start_date")}
               placeholderText="Start Date"
             />
-            <br />
             <DatePicker
               selected={eventDetails.end_date}
               onChange={(date) => handleDateChange(date, "end_date")}
               placeholderText="End Date"
             />
-            <br />
             <input
               onChange={onChange}
               placeholder="description"
               value={eventDetails.description}
             />
-            <br />
             <button
               onClick={() => {
                 updateHandler(eventDetails, event.event_id);

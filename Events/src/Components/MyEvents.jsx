@@ -171,7 +171,6 @@ const MyEvents = () => {
               <li key={event.id}>
                 <EventCard
                   event={event}
-                  key={event.id}
                   onDelete={handleDeleteEvent}
                   onEdit={handleEditEvent}
                 />

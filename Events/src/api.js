@@ -74,6 +74,8 @@ export const addEvent = (details) => {
 };
 
 export const updateEvent = (details, event_id) => {
+  console.log(details);
+  console.log(event_id);
   return apiClient
     .put(`/event/${event_id}`, details)
     .then((response) => {
