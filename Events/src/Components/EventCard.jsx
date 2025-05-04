@@ -1,24 +1,22 @@
-import { useContext, useEffect, useState } from "react";
+import { LoggedInUserContext } from "../Contexts/LoggedInUser";
+import { useContext, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
-import { LoggedInUserContext } from "../Contexts/LoggedInUser";
-import { DeletingContext } from "../Contexts/DeletingHandler";
-import { EditingContext } from "../Contexts/EditingHandler";
-
 import { deleteEvent, updateEvent } from "../api";
 import GoogleCalendarButton from "./GoogleCalanderButton";
 import SendEventEmail from "./SendEventEmail";
+import { DeletingContext } from "../Contexts/DeletingHandler";
+import { EditingContext } from "../Contexts/EditingHandler";
 
 const EventCard = ({ event }) => {
   const { loggedInUser } = useContext(LoggedInUserContext);
-  const { deleting, setDeleting } = useContext(DeletingContext);
-  const { editing, setEditing } = useContext(EditingContext);
-
+  const { setDeleting } = useContext(DeletingContext);
+  const { setEditing } = useContext(EditingContext);
   const [loading, setLoading] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [msg, setMsg] = useState("");
-
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [eventDetails, setEventDetails] = useState({
     name: "",
     location: "",
@@ -28,19 +26,6 @@ const EventCard = ({ event }) => {
     staff_id: loggedInUser,
   });
 
-  useEffect(() => {
-    if (editing === event.event_id) {
-      setEventDetails({
-        name: event.name || "",
-        location: event.location || "",
-        start_date: event.start_date ? new Date(event.start_date) : new Date(),
-        end_date: event.end_date ? new Date(event.end_date) : new Date(),
-        description: event.description || "",
-        staff_id: loggedInUser,
-      });
-    }
-  }, [editing, event, loggedInUser]);
-
   const handleDateChange = (date, field) => {
     setEventDetails((prev) => ({
       ...prev,
@@ -48,23 +33,15 @@ const EventCard = ({ event }) => {
     }));
   };
 
-  const onChange = (e) => {
-    const { name, value } = e.target;
-    setEventDetails((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   const deleteEventHandler = () => {
-    setDeleting("maybe");
+    setConfirmingDelete(true);
   };
 
   const confirmDeleteEventHandler = (event_id) => {
     setLoading(true);
+    setDeleting(true);
     deleteEvent(event_id)
       .then(() => {
-        setDeleting(null);
         setMsg("Event deleted");
       })
       .catch(() => {
@@ -72,28 +49,46 @@ const EventCard = ({ event }) => {
       })
       .finally(() => {
         setLoading(false);
+        setConfirmingDelete(false);
+        setDeleting(null);
         setTimeout(() => setMsg(""), 2000);
       });
   };
 
-  const editEventHandler = (event_id) => {
-    setEditing(event_id); // Triggers useEffect to populate form
+  const editEventHandler = () => {
+    setIsEditing(true);
+    setEventDetails({
+      name: event.name,
+      location: event.location,
+      start_date: new Date(event.start_date),
+      end_date: new Date(event.end_date),
+      description: event.description,
+      staff_id: loggedInUser,
+    });
   };
 
-  const updateHandler = (eventDetails, event_id) => {
+  const onChange = (e) => {
+    setEventDetails((prev) => ({
+      ...prev,
+      [e.target.placeholder]: e.target.value,
+    }));
+  };
+
+  const updateHandler = () => {
     const formattedEvent = {
       ...eventDetails,
       start_date: eventDetails.start_date.toISOString().split("T")[0],
       end_date: eventDetails.end_date.toISOString().split("T")[0],
     };
+    setEditing(true);
     setLoading(true);
-    updateEvent(formattedEvent, event_id)
+    updateEvent(formattedEvent, event.event_id)
       .then(() => {
-        setEditing(null);
         setMsg("Event details updated");
+        setIsEditing(false);
+        setEditing(null);
       })
-      .catch((error) => {
-        console.error(error);
+      .catch(() => {
         setMsg("Error updating event");
       })
       .finally(() => {
@@ -106,7 +101,6 @@ const EventCard = ({ event }) => {
     <>
       <p id="ErrorMsg">{msg}</p>
 
-      {/* Public View (not logged in) */}
       {!loggedInUser ? (
         <div className="EventCard">
           <h2 id="EventName">{event.name}</h2>
@@ -150,8 +144,7 @@ const EventCard = ({ event }) => {
             <GoogleCalendarButton event={event} />
           </div>
         </div>
-      ) : editing !== event.event_id ? (
-        // Admin view, not editing
+      ) : !isEditing ? (
         <div className="EventCard">
           <h2 id="EventName">{event.name}</h2>
           <p id="StartDate">
@@ -179,9 +172,12 @@ const EventCard = ({ event }) => {
             <GoogleCalendarButton event={event} />
           </div>
 
-          {deleting ? (
+          {loading ? (
+            <div className="Spinner"></div>
+          ) : confirmingDelete ? (
             <>
               <p id="msgbox">Are you sure?</p>
+              <br />
               <button
                 id="YDel"
                 className="Button"
@@ -189,16 +185,16 @@ const EventCard = ({ event }) => {
               >
                 Yes
               </button>
+              <br />
+              <br />
               <button
                 id="NDel"
                 className="Button"
-                onClick={() => setDeleting(null)}
+                onClick={() => setConfirmingDelete(false)}
               >
                 No
               </button>
             </>
-          ) : loading ? (
-            <div className="Spinner" />
           ) : (
             <>
               <button
@@ -211,7 +207,7 @@ const EventCard = ({ event }) => {
               <button
                 className="Button"
                 id="EditButton"
-                onClick={() => editEventHandler(event.event_id)}
+                onClick={editEventHandler}
               >
                 Edit
               </button>
@@ -219,21 +215,18 @@ const EventCard = ({ event }) => {
           )}
         </div>
       ) : loading ? (
-        <div className="Spinner" />
+        <div className="Spinner"></div>
       ) : (
-        // Edit form view
-        <div className="EventCard EditEventForm">
+        <li className="EventCard EditEventForm">
           <input
-            name="name"
-            value={eventDetails.name}
             onChange={onChange}
-            placeholder="Event Name"
+            placeholder="name"
+            value={eventDetails.name}
           />
           <input
-            name="location"
-            value={eventDetails.location}
             onChange={onChange}
-            placeholder="Location"
+            placeholder="location"
+            value={eventDetails.location}
           />
           <DatePicker
             selected={eventDetails.start_date}
@@ -246,16 +239,13 @@ const EventCard = ({ event }) => {
             placeholderText="End Date"
           />
           <input
-            name="description"
-            value={eventDetails.description}
             onChange={onChange}
-            placeholder="Description"
+            placeholder="description"
+            value={eventDetails.description}
           />
-          <button onClick={() => updateHandler(eventDetails, event.event_id)}>
-            Update
-          </button>
-          <button onClick={() => setEditing(null)}>Cancel</button>
-        </div>
+          <button onClick={updateHandler}>Update</button>
+          <button onClick={() => setIsEditing(false)}>Cancel</button>
+        </li>
       )}
     </>
   );
