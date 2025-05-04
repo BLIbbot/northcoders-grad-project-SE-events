@@ -54,6 +54,7 @@ const SignUp = () => {
       {!loggedInUser ? (
         <div className="SignupForm">
           <input
+            title="username"
             type="text"
             onChange={onChange}
             name="username"
@@ -61,7 +62,9 @@ const SignUp = () => {
             value={registrationDetails.username}
           />
           <br />
+
           <input
+            title="password"
             type="password"
             onChange={onChange}
             name="password"

@@ -35,6 +35,7 @@ const Signin = ({ setProfile }) => {
         <form onSubmit={signinHandler} className="SignInForm">
           <div>
             <input
+              title="username"
               type="text"
               placeholder="Username"
               value={username}
@@ -44,6 +45,7 @@ const Signin = ({ setProfile }) => {
           </div>
           <div>
             <input
+              title="password"
               type="password"
               placeholder="Password"
               value={password}
